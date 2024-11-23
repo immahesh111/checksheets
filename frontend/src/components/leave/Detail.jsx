@@ -15,8 +15,9 @@ const Detail = () => {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
                 });
-
+        
                 if (response.data.success) {
+                    console.log("Fetched Leave Data:", response.data.leave); // Log fetched data
                     setLeave(response.data.leave);
                 }
             } catch (error) {
@@ -28,7 +29,6 @@ const Detail = () => {
 
         fetchLeave();
     }, [id]);
-
     const changeStatus = async (id, status) => {
         try {
             const response = await axios.put(`http://localhost:5000/api/leave/${id}`, { status }, {
@@ -280,12 +280,12 @@ const Detail = () => {
                                     <h4 className='text-md font-bold mt-4'>Volume</h4>
                                     <div className='flex space-x-4'>
                                         <div className='flex flex-col'>
-                                            <label className='block text-sm font-medium text-gray-700'>Minimum:</label>
-                                            <span>{leave.spiManagement.volume.minimum || 'Not answered'}</span>
+                                            <label className='block text-sm font-medium text-gray-700'>Minimum Volume:</label>
+                                            <span>{leave.spiManagement.volumeStringMinimum || 'Not answered'}</span>
                                         </div>
                                         <div className='flex flex-col'>
-                                            <label className='block text-sm font-medium text-gray-700'>Highest:</label>
-                                            <span>{leave.spiManagement.volume.highest || 'Not answered'}</span>
+                                            <label className='block text-sm font-medium text-gray-700'>Highest Volume:</label>
+                                            <span>{leave.spiManagement.volumeStringHighest || 'Not answered'}</span>
                                         </div>
                                     </div>
 
@@ -293,12 +293,12 @@ const Detail = () => {
                                     <h4 className='text-md font-bold mt-4'>Area</h4>
                                     <div className='flex space-x-4'>
                                         <div className='flex flex-col'>
-                                            <label className='block text-sm font-medium text-gray-700'>Minimum:</label>
-                                            <span>{leave.spiManagement.area.minimum || 'Not answered'}</span>
+                                            <label className='block text-sm font-medium text-gray-700'>Minimum Area:</label>
+                                            <span>{leave.spiManagement.areaStringMinimum || 'Not answered'}</span>
                                         </div>
                                         <div className='flex flex-col'>
-                                            <label className='block text-sm font-medium text-gray-700'>Highest:</label>
-                                            <span>{leave.spiManagement.area.highest || 'Not answered'}</span>
+                                            <label className='block text-sm font-medium text-gray-700'>Highest Area:</label>
+                                            <span>{leave.spiManagement.areaStringHighest || 'Not answered'}</span>
                                         </div>
                                     </div>
 
@@ -306,12 +306,12 @@ const Detail = () => {
                                     <h4 className='text-md font-bold mt-4'>Height</h4>
                                     <div className='flex space-x-4'>
                                         <div className='flex flex-col'>
-                                            <label className='block text-sm font-medium text-gray-700'>Minimum:</label>
-                                            <span>{leave.spiManagement.height.minimum || 'Not answered'}</span>
+                                            <label className='block text-sm font-medium text-gray-700'>Minimum Height:</label>
+                                            <span>{leave.spiManagement.heightStringMinimum || 'Not answered'}</span>
                                         </div>
                                         <div className='flex flex-col'>
-                                            <label className='block text-sm font-medium text-gray-700'>Highest:</label>
-                                            <span>{leave.spiManagement.height.highest || 'Not answered'}</span>
+                                            <label className='block text-sm font-medium text-gray-700'>Highest Height:</label>
+                                            <span>{leave.spiManagement.heightStringHighest || 'Not answered'}</span>
                                         </div>
                                     </div>
 

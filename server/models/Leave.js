@@ -57,18 +57,12 @@ const leaveSchema = new Schema({
     spiManagement: {
         question21: { type: String },
         question22: { type: String },
-        volume: {
-            minimum: { type: Number }, // Expecting a Number
-            highest: { type: Number }   // Expecting a Number
-        },
-        area: {
-            minimum: { type: Number },   // Expecting a Number
-            highest: { type: Number }     // Expecting a Number
-        },
-        height: {
-            minimum: { type: Number },    // Expecting a Number
-            highest: { type: Number }      // Expecting a Number
-        }
+        volumeStringMinimum: { type: String },  // Separate field for minimum volume
+        volumeStringHighest: { type: String },   // Separate field for highest volume
+        areaStringMinimum: { type: String },      // Separate field for minimum area
+        areaStringHighest: { type: String },      // Separate field for highest area
+        heightStringMinimum: { type: String },    // Separate field for minimum height
+        heightStringHighest: { type: String }     // Separate field for highest height
     },
 
     // Pick & Place Management Questions

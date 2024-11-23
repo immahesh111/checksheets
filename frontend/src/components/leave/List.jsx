@@ -36,6 +36,18 @@ const List = () => {
         return <div>Loading...</div>;
     }
 
+    // Function to format date
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
+
+    // Function to format time
+    const formatTime = (dateString) => {
+        const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        return new Date(dateString).toLocaleTimeString('en-US', options);
+    };
+
     return (
         <div className='p-6'>
             <div className='text-center'>
@@ -52,8 +64,9 @@ const List = () => {
                 <thead className='text-xs text-gray-700 uppercase bg-gray-500 border border-gray-200'>
                     <tr>
                         <th className='px-6 py-3'>SNO</th>
-                        <th className='px-6 py-3'>Day</th> {/* Added Day column */}
-                        <th className='px-6 py-3'>Shift</th> {/* Added Shift column */}
+                        <th className='px-6 py-3'>Day</th> {/* Day column */}
+                        <th className='px-6 py-3'>Time</th> {/* Time column */}
+                        <th className='px-6 py-3'>Shift</th> {/* Shift column */}
                         <th className='px-6 py-3'>Status</th> {/* Status column */}
                     </tr>
                 </thead>
@@ -65,9 +78,12 @@ const List = () => {
                             className='bg-white border-b dark:bg-gray-800 dark:border-gray-700'>
 
                             <td className='px-6 py-3'>{sno++}</td>
-                            <td className='px-6 py-3'>{leave.date || 'Not specified'}</td> {/* Display Day */}
-                            <td className='px-6 py-3'>{leave.shift || 'Not specified'}</td> {/* Display Shift */}
-                            <td className='px-6 py-3'>{leave.status}</td> {/* Display Status */}
+                            {/* Display Day */}
+                            <td className='px-6 py-3'>{formatDate(leave.date) || 'Not specified'}</td> 
+                            {/* Display Time */}
+                            <td className='px-6 py-3'>{formatTime(leave.date) || 'Not specified'}</td> 
+                            <td className='px-6 py-3'>{leave.shift || 'Not specified'}</td> 
+                            <td className='px-6 py-3'>{leave.status}</td> 
 
                         </tr>
                     ))}
