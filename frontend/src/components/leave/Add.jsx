@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Add = () => {
     const { user } = useAuth();
-    
+
     const [leave, setLeave] = useState({
         userId: user._id,
         date: new Date().toISOString().split('T')[0], // Automatically set current date
@@ -45,9 +45,12 @@ const Add = () => {
         spiManagement: {
             question21: '',
             question22: '',
-            volume: { minimum: 0, highest: 0 }, // Initialize as numbers
-            area: { minimum: 0, highest: 0 },   // Initialize as numbers
-            height: { minimum: 0, highest: 0 }  // Initialize as numbers
+            volumeStringMinimum: '', // Separate question for minimum volume
+            volumeStringHighest: '',  // Separate question for highest volume
+            areaStringMinimum: '',     // Separate question for minimum area
+            areaStringHighest: '',     // Separate question for highest area
+            heightStringMinimum: '',   // Separate question for minimum height
+            heightStringHighest: '',    // Separate question for highest height
         },
         pickAndPlaceManagement: {
             question25: '',
@@ -60,42 +63,35 @@ const Add = () => {
 
 
     });
-    
+
     const [showRawMaterialStorage, setShowRawMaterialStorage] = useState(false); // State to toggle Raw Material Storage questions
     const [showSolderPasteManagement, setShowSolderPasteManagement] = useState(false);
     const [showLoaderManagement, setShowLoaderManagement] = useState(false);
     const [showGKGPrinterManagement, setShowGKGPrinterManagement] = useState(false);
     const [showSPIMangement, setShowSPIMangement] = useState(false);
-    
+
     const [showPickAndPlaceManagement, setShowPickAndPlaceManagement] = useState(false);
     const navigate = useNavigate();
 
-    const validateLeaveData = () => {
-        const { spiManagement } = leave;
-        return (
-            typeof spiManagement.volume.minimum === 'number' &&
-            typeof spiManagement.volume.highest === 'number' &&
-            typeof spiManagement.area.minimum === 'number' &&
-            typeof spiManagement.area.highest === 'number' &&
-            typeof spiManagement.height.minimum === 'number' &&
-            typeof spiManagement.height.highest === 'number'
-        );
-    };
-    
+  
+
     const handleChange = (e) => {
         const { name, value } = e.target;
     
-        // Check if the field is a nested field (subdivision)
+        console.log(`Input Name: ${name}, Input Value: ${value}`);  // Debugging log
+    
         if (name.includes('.')) {
-            const [subdivision, key] = name.split('.');
-            
-            // If it's a number field, parse it
-            if (key === 'minimum' || key === 'highest') {
+            const [subdivision, key, subKey] = name.split('.');
+    
+            if (subKey) {
                 setLeave((prevState) => ({
                     ...prevState,
                     [subdivision]: {
                         ...prevState[subdivision],
-                        [key]: parseFloat(value) // Ensure it's a number
+                        [key]: {
+                            ...prevState[subdivision][key],
+                            [subKey]: value  // Update nested field directly.
+                        }
                     }
                 }));
             } else {
@@ -103,15 +99,14 @@ const Add = () => {
                     ...prevState,
                     [subdivision]: {
                         ...prevState[subdivision],
-                        [key]: value
+                        [key]: value  // Update non-nested field.
                     }
                 }));
             }
         } else {
-            // Handle non-nested fields directly (date and shift)
             setLeave((prevState) => ({
                 ...prevState,
-                [name]: value
+                [name]: value  // Update top-level field.
             }));
         }
     };
@@ -119,14 +114,14 @@ const Add = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Submitting leave data:", leave); // Log leave data before submission
-        
+
         try {
             const response = await axios.post(`http://localhost:5000/api/leave/add`, leave, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            
+
             if (response.data.success) {
                 navigate(`/employee-dashboard/leaves/${user._id}`);
             }
@@ -655,13 +650,13 @@ const Add = () => {
 
                             {/* Volume Section */}
                             <h4 className='text-md font-bold mt-4'>Volume</h4>
-                            <div className='flex space-x-4'>
+                            <div className='flex flex-col space-y-4'>
                                 <div className='flex flex-col'>
-                                    <label className='block text-sm font-medium text-gray-700'>Minimum:</label>
+                                    <label className='block text-sm font-medium text-gray-700'>Minimum Volume:</label>
                                     <input
-                                        type='number'
-                                        name='spiManagement.volume.minimum'
-                                        value={leave.spiManagement.volume.minimum}
+                                        type='text'
+                                        name='spiManagement.volumeStringMinimum'
+                                        value={leave.spiManagement.volumeStringMinimum}
                                         onChange={handleChange}
                                         placeholder='Enter minimum volume'
                                         className='mt-1 p-2 block w-full border border-gray-300 rounded-md'
@@ -669,11 +664,11 @@ const Add = () => {
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='block text-sm font-medium text-gray-700'>Highest:</label>
+                                    <label className='block text-sm font-medium text-gray-700'>Highest Volume:</label>
                                     <input
-                                        type='number'
-                                        name='spiManagement.volume.highest'
-                                        value={leave.spiManagement.volume.highest}
+                                        type='text'
+                                        name='spiManagement.volumeStringHighest'
+                                        value={leave.spiManagement.volumeStringHighest}
                                         onChange={handleChange}
                                         placeholder='Enter highest volume'
                                         className='mt-1 p-2 block w-full border border-gray-300 rounded-md'
@@ -684,13 +679,13 @@ const Add = () => {
 
                             {/* Area Section */}
                             <h4 className='text-md font-bold mt-4'>Area</h4>
-                            <div className='flex space-x-4'>
+                            <div className='flex flex-col space-y-4'>
                                 <div className='flex flex-col'>
-                                    <label className='block text-sm font-medium text-gray-700'>Minimum:</label>
+                                    <label className='block text-sm font-medium text-gray-700'>Minimum Area:</label>
                                     <input
-                                        type='number'
-                                        name='spiManagement.area.minimum'
-                                        value={leave.spiManagement.area.minimum}
+                                        type='text'
+                                        name='spiManagement.areaStringMinimum'
+                                        value={leave.spiManagement.areaStringMinimum}
                                         onChange={handleChange}
                                         placeholder='Enter minimum area'
                                         className='mt-1 p-2 block w-full border border-gray-300 rounded-md'
@@ -698,11 +693,11 @@ const Add = () => {
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='block text-sm font-medium text-gray-700'>Highest:</label>
+                                    <label className='block text-sm font-medium text-gray-700'>Highest Area:</label>
                                     <input
-                                        type='number'
-                                        name='spiManagement.area.highest'
-                                        value={leave.spiManagement.area.highest}
+                                        type='text'
+                                        name='spiManagement.areaStringHighest'
+                                        value={leave.spiManagement.areaStringHighest}
                                         onChange={handleChange}
                                         placeholder='Enter highest area'
                                         className='mt-1 p-2 block w-full border border-gray-300 rounded-md'
@@ -713,13 +708,13 @@ const Add = () => {
 
                             {/* Height Section */}
                             <h4 className='text-md font-bold mt-4'>Height</h4>
-                            <div className='flex space-x-4'>
+                            <div className='flex flex-col space-y-4'>
                                 <div className='flex flex-col'>
-                                    <label className='block text-sm font-medium text-gray-700'>Minimum:</label>
+                                    <label className='block text-sm font-medium text-gray-700'>Minimum Height:</label>
                                     <input
-                                        type='number'
-                                        name='spiManagement.height.minimum'
-                                        value={leave.spiManagement.height.minimum}
+                                        type='text'
+                                        name='spiManagement.heightStringMinimum'
+                                        value={leave.spiManagement.heightStringMinimum}
                                         onChange={handleChange}
                                         placeholder='Enter minimum height'
                                         className='mt-1 p-2 block w-full border border-gray-300 rounded-md'
@@ -727,11 +722,11 @@ const Add = () => {
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <label className='block text-sm font-medium text-gray-700'>Highest:</label>
+                                    <label className='block text-sm font-medium text-gray-700'>Highest Height:</label>
                                     <input
-                                        type='number'
-                                        name='spiManagement.height.highest'
-                                        value={leave.spiManagement.height.highest}
+                                        type='text'
+                                        name='spiManagement.heightStringHighest'
+                                        value={leave.spiManagement.heightStringHighest}
                                         onChange={handleChange}
                                         placeholder='Enter highest height'
                                         className='mt-1 p-2 block w-full border border-gray-300 rounded-md'
